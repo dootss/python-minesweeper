@@ -17,17 +17,16 @@ IMPOSSIBLE_COLOR = "#503333"  # bright red for impossible moves
 
 class Minesweeper:
     def __init__(self, master):
-        self.master.configure(bg=BG_COLOR)
-        self.master['bg'] = BG_COLOR
+        self.master      = master
         self.start_time  = None  
         self.game_active = False
-        self.master      = master
         self.buttons     = []
         self.mines       = set()
         self.revealed    = set()
         self.flags       = set()
-        self.first_click = True
         self.temp_blanks = set()
+        self.first_click = True
+        self.master.configure(bg=BG_COLOR)
         self.show_menu()
 
     def show_menu(self):
