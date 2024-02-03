@@ -1,9 +1,9 @@
-import tkinter as tk
-from tkinter import messagebox
+from   tkinter import messagebox
+import tkinter as     tk
 import random
+import struct
 import math
 import time
-import struct
 
 CELL_SIZE        = 36         # px. scales well with font rn
 BG_COLOR         = "#222222"  # darker gray
@@ -36,7 +36,12 @@ class Minesweeper:
         title_label = tk.Label(self.menu_frame, text="Select Difficulty", bg=BG_COLOR, fg=NUMBER_COLORS, font=("Arial", 14, "bold"))
         title_label.pack(pady=(0, 20))
 
-        modes = [("Beginner", 9, 9, 10), ("Intermediate", 16, 16, 40), ("Expert", 30, 16, 99)]
+        modes = [
+            # name       width height mines
+            ("Beginner",     9,  9,  10),
+            ("Intermediate", 16, 16, 40),
+            ("Expert",       30, 16, 99)
+            ]
         buttons_frame = tk.Frame(self.menu_frame, bg=BG_COLOR)
         buttons_frame.pack()
 
