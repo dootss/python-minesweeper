@@ -47,7 +47,7 @@ python main.py
 
 ## Todo
 - [ ] Customizable mine count (maybe. it'd make leaderboard tracking harder.)
-- [ ] Fix larger grid centering
+- [x] Fix larger grid centering
 - [ ] More animations
 - [ ] Edge rounding (if even practically possible)
 - [ ] Customizable color scheme
