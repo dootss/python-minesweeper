@@ -9,11 +9,11 @@ Made with the intent of looking nice and being easy to setup & play.
 1. [Introduction](#python-minesweeper)
 2. [Features](#features)
 3. [Previews](#previews)
-    - [Main Menu](#main-menu)
-    - [Highscores](#highscores)
+    - [Gameplay](#gameplay)
     - [In-game](#in-game)
     - [On loss](#on-loss)
-    - [Gameplay](#gameplay)
+    - [Main Menu](#main-menu)
+    - [Highscores](#highscores)
 4. [Installation & Usage](#installation--usage)
 5. [Todo](#todo)
 
@@ -27,16 +27,16 @@ Made with the intent of looking nice and being easy to setup & play.
 - **Impossible Move Alerts**: Numbers that do not logically make sense (e.g: having too many flags) are highlighted in red.
 
 ## Previews
-### Main Menu
-![image](https://github.com/dootss/python-minesweeper/assets/126783585/f05479d4-7ee2-454b-971c-d073a983942a)
-### Highscores
-![image](https://github.com/dootss/python-minesweeper/assets/126783585/7838a74d-69e4-4491-b88b-058c5592ddb1)
+### Gameplay
+https://github.com/dootss/python-minesweeper/assets/126783585/e4c8899a-672a-45d3-97fe-8992b6c30dc3
 ### In-game
 ![image](https://github.com/dootss/python-minesweeper/assets/126783585/98f6a154-faac-4671-b4ed-4ad2b489910d)
 ### On loss
 ![image](https://github.com/dootss/python-minesweeper/assets/126783585/8494462b-3839-4a1e-8683-7edf7516d204)
-### Gameplay
-https://github.com/dootss/python-minesweeper/assets/126783585/e4c8899a-672a-45d3-97fe-8992b6c30dc3
+### Main Menu
+![image](https://github.com/dootss/python-minesweeper/assets/126783585/f05479d4-7ee2-454b-971c-d073a983942a)
+### Highscores
+![image](https://github.com/dootss/python-minesweeper/assets/126783585/7838a74d-69e4-4491-b88b-058c5592ddb1)
 
 ## Installation & Usage
 ```
