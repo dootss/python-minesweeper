@@ -1,7 +1,21 @@
 # python-minesweeper
 
 A clean, smooth, and aesthetic Minesweeper game implemented in Python using tkinter. This project relies solely on Python's base modules, requiring no additional dependencies beyond a standard Python installation.
+
 Made with the intent of looking nice and being easy to setup & play.
+
+----
+### Table of Contents
+1. [Introduction](#python-minesweeper)
+2. [Features](#features)
+3. [Previews](#previews)
+    - [Main Menu](#main-menu)
+    - [Highscores](#highscores)
+    - [In-game](#in-game)
+    - [On loss](#on-loss)
+    - [Gameplay](#gameplay)
+4. [Installation & Usage](#installation--usage)
+5. [Todo](#todo)
 
 ## Features
 
