@@ -41,6 +41,7 @@ https://github.com/dootss/python-minesweeper/assets/126783585/e4c8899a-672a-45d3
 ## Installation & Usage
 ```
 git clone https://github.com/dootss/python-minesweeper.git
+cd python-minesweeper
 python main.py
 ```
 
