@@ -29,6 +29,19 @@ class Minesweeper:
         self.master.configure(bg=BG_COLOR)
         self.show_menu()
 
+    def recenter_window(self): # fix for higher grid count boards not being centered properly
+        self.master.update_idletasks()  # update the window to get the latest size
+        window_width = self.master.winfo_width()
+        window_height = self.master.winfo_height()
+
+        screen_width = self.master.winfo_screenwidth()
+        screen_height = self.master.winfo_screenheight()
+
+        center_x = int((screen_width - window_width) / 2)
+        center_y = int((screen_height - window_height) / 2)
+
+        self.master.geometry(f'+{center_x}+{center_y}')
+
     def show_menu(self):
         self.menu_frame = tk.Frame(self.master, bg=BG_COLOR)
         self.menu_frame.pack(padx=10, pady=10, fill="both", expand=True)
@@ -147,6 +160,7 @@ class Minesweeper:
         self.menu_frame.destroy()  # remove menu after starting
         self.buttons = [[None for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
         self.create_widgets()
+        self.recenter_window()  # fix for higher grid count boards not being centered properly
 
 
 
