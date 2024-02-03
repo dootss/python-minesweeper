@@ -17,14 +17,14 @@ IMPOSSIBLE_COLOR = "#503333"  # bright red for impossible moves
 
 class Minesweeper:
     def __init__(self, master):
-        self.start_time = None  
-        self.game_active = False
-        self.master = master
         self.master.configure(bg=BG_COLOR)
-        self.buttons = []
-        self.mines = set()
-        self.revealed = set()
-        self.flags = set()
+        self.start_time  = None  
+        self.game_active = False
+        self.master      = master
+        self.buttons     = []
+        self.mines       = set()
+        self.revealed    = set()
+        self.flags       = set()
         self.first_click = True
         self.temp_blanks = set()
         self.show_menu()
@@ -75,9 +75,9 @@ class Minesweeper:
         highscores_window.resizable(False, False)
 
         difficulties = {
-            "Beginner": "9x9 - 10 Mines",
+            "Beginner":     "9x9 - 10 Mines",
             "Intermediate": "16x16 - 40 Mines",
-            "Expert": "30x16 - 99 Mines"
+            "Expert":       "30x16 - 99 Mines"
         }
 
         highscores_frame = tk.Frame(highscores_window, bg=BG_COLOR)
@@ -122,10 +122,10 @@ class Minesweeper:
 
         highscores_window.update_idletasks()
 
-        window_width = highscores_window.winfo_width()
+        window_width  = highscores_window.winfo_width()
         window_height = highscores_window.winfo_height()
 
-        screen_width = highscores_window.winfo_screenwidth()
+        screen_width  = highscores_window.winfo_screenwidth()
         screen_height = highscores_window.winfo_screenheight()
 
         # we're moving it 450 pixels to the right here because on a 1920x1080 monitor,
@@ -162,11 +162,11 @@ class Minesweeper:
                 button = tk.Canvas(self.master, width=CELL_SIZE, height=CELL_SIZE, bg=UNCLICKED_COLOR, highlightthickness=0)
                 button.grid(row=row, column=col, sticky="nsew")
                 # subtract 1 from each because of the top title bar
-                button.bind("<Button-1>", lambda e, r=row, c=col: self.cell_click(r-1, c, e)) 
+                button.bind("<Button-1>",        lambda e, r=row, c=col: self.cell_click(r-1, c, e)) 
                 button.bind("<ButtonRelease-1>", lambda e, r=row, c=col: self.hide_temporary_blanks(r-1, c, e))  
-                button.bind("<Button-3>", lambda e, r=row, c=col: self.place_flag(r-1, c))
-                button.bind("<Enter>", lambda e, r=row, c=col: self.on_hover(e, r-1, c))  
-                button.bind("<Leave>", lambda e, r=row, c=col: self.on_leave(e, r-1, c))  
+                button.bind("<Button-3>",        lambda e, r=row, c=col: self.place_flag(r-1, c))
+                button.bind("<Enter>",           lambda e, r=row, c=col: self.on_hover(e, r-1, c))  
+                button.bind("<Leave>",           lambda e, r=row, c=col: self.on_leave(e, r-1, c))  
                 self.buttons[row-1][col] = button
 
     def on_hover(self, event, row, col):
@@ -241,7 +241,7 @@ class Minesweeper:
         rectangle_x_start = square_x_start + square_side
         rectangle_y_start = line_y_start + rectangle_y_offset
         
-        # Draw flagpole
+        # flagpole
         button.create_rectangle(flag_x_start, line_y_start, flag_x_start + line_thickness, line_y_start + flag_height, tags="flag", fill=flag_color, outline=flag_color)
         
         # right square
@@ -279,10 +279,10 @@ class Minesweeper:
                             self.game_over(False)
                             return
                         self.reveal_cell(r, c)
-            # Check for a win after revealing cells around a number
+            # check for a win after chording
             if self.check_win():
                 self.game_over(True)
-        elif flags_around > num:  # Highlight the cell if more flags are placed around it than the number indicates
+        elif flags_around > num:  # red highlight if more flags are placed around it than the number indicates
             self.buttons[row][col].config(bg=IMPOSSIBLE_COLOR)
         else:
             self.show_temporary_blanks(row, col)
@@ -308,7 +308,7 @@ class Minesweeper:
                     if flags_around > num:
                         self.buttons[r][c].config(bg=IMPOSSIBLE_COLOR)
                     else:
-                        self.buttons[r][c].config(bg=CLICKED_COLOR)  # Reset to clicked color if the impossible condition is no longer met
+                        self.buttons[r][c].config(bg=CLICKED_COLOR)  # change to normal if it's logical now
 
 
     def place_mines(self, start_row, start_col):
@@ -393,49 +393,57 @@ class Minesweeper:
                 self.buttons[row][col].unbind("<Leave>")
 
         if not win:
-            # If the game is lost, reveal all mines and the entire board
+            # if game is lost, we reveal all the mines and the whole board
+            # base minesweeper may not show the whole board (i think) but
+            # it makes it more fun being able to see the whole thing. no harm.
             for r, c in self.mines:
-                if (r, c) not in self.flags:  # Check if the mine was flagged
+                if (r, c) not in self.flags:  # if mine was flagged
                     button = self.buttons[r][c]
-                    button.config(bg=UNCLICKED_COLOR)  # Optionally, indicate mine locations differently
-                    self.draw_mine(button)  # Draw a mine symbol only if it wasn't flagged
-                # If it was flagged, it's already indicated as such, so we don't change it
+                    button.config(bg=UNCLICKED_COLOR)
+                    self.draw_mine(button)  # if it wasn't flagged, draw a mine in the place
+                # if it was flagged, it's already indicated as such, so we don't change it
             for row in range(GRID_HEIGHT):
                 for col in range(GRID_WIDTH):
                     if (row, col) not in self.mines:
-                        self.reveal_cell(row, col)  # Reveal numbers for non-mine cells
+                        self.reveal_cell(row, col)  # show numbers on non-mine cells
         else:
-            # If the game is won, visually flag all unflagged mines without calling place_flag
+            # if we won without flags, flag all unflagged mines
             for r, c in self.mines:
                 if (r, c) not in self.flags:
                     button = self.buttons[r][c]
-                    button.config(bg="#666666")  # Change background to indicate flagging
-                    self.draw_flag(button)  # Directly draw the flag on the canvas
-            self.update_flag_counter(MINES_COUNT)  # Update flag counter to reflect all mines flagged
+                    button.config(bg="#666666")  # TODO: move to top constants
+                    self.draw_flag(button)  
+            self.update_flag_counter(MINES_COUNT)  # update flag counter to x/x
 
-        # Show the appropriate message box for win/loss
         if win:
             end_time = time.time()
-            time_taken = end_time - self.start_time  # Calculate time taken
-            self.store_win_record(time_taken)  # Store the win record
+            time_taken = end_time - self.start_time
+            self.store_win_record(time_taken)
+            # see, i want to move away from messagebox but i'm not sure what a better
+            # way to give info to the user is
+            # maybe i could put something in the top titlebar instead
+            # then make it return to the menu on confirmation so we have a loop
+            # for now this works
             messagebox.showinfo("Minesweeper", "Congratulations! You've won!")
         else:
             messagebox.showinfo("Minesweeper", "Game Over! You hit a mine.")
         self.master.destroy()
 
     def store_win_record(self, time_taken):
+        # the only real reason i'm using struct here is because this project was
+        # primarily made for some friends. and i know for a fact they'd end up
+        # trying to change their own records smh
         mode = f"{GRID_WIDTH}x{GRID_HEIGHT} - {MINES_COUNT} Mines"
-        mode_encoded = mode.encode('utf-8')  # Encode the mode string as bytes
+        mode_encoded = mode.encode('utf-8')  # encode the mode string as bytes
         record = struct.pack('I', len(mode_encoded)) + mode_encoded + struct.pack('f', time_taken)
         # 'I' is for unsigned int (length of the mode string), 'f' is for float (time_taken)
-        with open("minesweeper.wins", "ab") as file:  # Open file in append binary mode
+        with open("minesweeper.wins", "ab") as file:
             file.write(record)
 
     def draw_mine(self, button):
-        # Adjusted mine drawing parameters for a smaller design
-        outer_circle_radius = CELL_SIZE * 0.2  # Smaller outer circle
-        inner_circle_radius = CELL_SIZE * 0.07  # Smaller inner circle
-        leg_size = CELL_SIZE * 0.1  # Smaller square "legs"
+        outer_circle_radius = CELL_SIZE * 0.2  # main mine body
+        inner_circle_radius = CELL_SIZE * 0.07  # the inner circle of the same color as the cell
+        leg_size = CELL_SIZE * 0.1  # mines legs
         
         # Draw outer circle
         button.create_oval(
@@ -451,13 +459,13 @@ class Minesweeper:
             fill=UNCLICKED_COLOR, outline=UNCLICKED_COLOR
         )
         
-        # Calculate and draw legs at every 45 degrees around the outer circle
-        for angle in range(0, 360, 45):  # 0, 45, 90, ..., 315 degrees
-            radian = angle * (3.141592653589793 / 180)  # Convert angle to radians
-            # Calculate the center position for each leg
+        # calculate and draw legs at every 45 degrees around the outer circle
+        for angle in range(0, 360, 45):
+            radian = angle * (3.141592653589793 / 180)  # angle -> radians
+            # getting the center position for each leg
             x_center = CELL_SIZE/2 + (outer_circle_radius + leg_size/2) * math.cos(radian)
             y_center = CELL_SIZE/2 + (outer_circle_radius + leg_size/2) * math.sin(radian)
-            # Calculate the top-left corner based on the center position
+            # getting the top-left corner based on the center position
             x = x_center - leg_size/2
             y = y_center - leg_size/2
             button.create_rectangle(
@@ -468,24 +476,20 @@ class Minesweeper:
 def main():
     root = tk.Tk()
     root.title("Minesweeper")
-    root.resizable(False, False)  # Make the window non-resizable
+    root.resizable(False, False)  # non-resizable because no point having it resizable (that i see)
 
-    # Force Tkinter to draw the window so we can get its size
+    # update so we can get size
     root.update_idletasks()
 
-    # Get window size
     window_width = root.winfo_width()
     window_height = root.winfo_height()
 
-    # Get screen width and height
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
 
-    # Calculate position for window to be centered
     center_x = int((screen_width - window_width) / 2)
     center_y = int((screen_height - window_height) / 2)
 
-    # Set the window's position to center
     root.geometry(f'+{center_x}+{center_y}')
 
     game = Minesweeper(root)
