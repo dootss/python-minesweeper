@@ -21,6 +21,7 @@ class Minesweeper:
         self.start_time  = None  
         self.game_active = False
         self.buttons     = []
+        self.scheduled_tasks = []  # Add this line
         self.mines       = set()
         self.revealed    = set()
         self.flags       = set()
@@ -169,24 +170,47 @@ class Minesweeper:
         self.info_frame = tk.Frame(self.master, bg=BG_COLOR, height=CELL_SIZE)
         self.info_frame.grid(row=0, column=0, columnspan=GRID_WIDTH, sticky="nsew")
         
-        self.flag_counter_label = tk.Label(self.info_frame, text=f"Flagged: 0/{MINES_COUNT}", bg=BG_COLOR, fg=NUMBER_COLORS, font=("Arial", int(CELL_SIZE/2.5)))
+        self.flag_counter_label = tk.Label(self.info_frame, text=f"Flagged: 0/{MINES_COUNT}", bg=BG_COLOR, fg=NUMBER_COLORS, font=("Arial", int(CELL_SIZE/2.5), "bold"))
         self.flag_counter_label.pack(side="left", padx=(10, 0))
         
+        # Restart Button
+        self.restart_button = tk.Button(self.info_frame, text="Restart", bg=UNCLICKED_COLOR, fg=NUMBER_COLORS, font=("Arial", int(CELL_SIZE/2.5), "bold"), relief="flat", command=self.restart_game)
+        self.restart_button.pack(side="left", expand=True, padx=10)  # Added padding for visual separation
+        
         # Time Elapsed Label
-        self.time_elapsed_label = tk.Label(self.info_frame, text="Time: 0s", bg=BG_COLOR, fg=NUMBER_COLORS, font=("Arial", int(CELL_SIZE/2.5)))
+        self.time_elapsed_label = tk.Label(self.info_frame, text="Time: 0s", bg=BG_COLOR, fg=NUMBER_COLORS, font=("Arial", int(CELL_SIZE/2.5), "bold"))
         self.time_elapsed_label.pack(side="right", padx=(0, 10)) 
 
         for row in range(1, GRID_HEIGHT + 1):  # grid placement for buttons from row 1
             for col in range(GRID_WIDTH):
                 button = tk.Canvas(self.master, width=CELL_SIZE, height=CELL_SIZE, bg=UNCLICKED_COLOR, highlightthickness=0)
                 button.grid(row=row, column=col, sticky="nsew")
-                # subtract 1 from each because of the top title bar
                 button.bind("<Button-1>",        lambda e, r=row, c=col: self.cell_click(r-1, c, e)) 
                 button.bind("<ButtonRelease-1>", lambda e, r=row, c=col: self.hide_temporary_blanks(r-1, c, e))  
                 button.bind("<Button-3>",        lambda e, r=row, c=col: self.place_flag(r-1, c))
                 button.bind("<Enter>",           lambda e, r=row, c=col: self.on_hover(e, r-1, c))  
                 button.bind("<Leave>",           lambda e, r=row, c=col: self.on_leave(e, r-1, c))  
                 self.buttons[row-1][col] = button
+
+    def restart_game(self):
+        # Cancel all scheduled tasks
+        for task_id in self.scheduled_tasks:
+            self.master.after_cancel(task_id)
+        self.scheduled_tasks.clear()  # Clear the list of task IDs
+
+        # Clear the current game state
+        for row in self.buttons:
+            for button in row:
+                button.destroy()
+        self.buttons.clear()
+        self.mines.clear()
+        self.revealed.clear()
+        self.flags.clear()
+        self.temp_blanks.clear()
+        self.first_click = True
+        self.game_active = False
+        # Start a new game with the same settings
+        self.start_game(GRID_WIDTH, GRID_HEIGHT, MINES_COUNT)
 
     def on_hover(self, event, row, col):
         # if the cell is revealed, flagged, or neither
@@ -381,7 +405,8 @@ class Minesweeper:
             for i in range(steps + 1):
                 factor = i / steps
                 color = self.interpolate_color(UNCLICKED_COLOR, CLICKED_COLOR, factor)
-                self.master.after(int(i * 50), lambda b=button, c=color: b.config(bg=c))  # schedule color update
+                task_id = self.master.after(int(i * 50), lambda b=button, c=color: b.config(bg=c))
+                self.scheduled_tasks.append(task_id)  # Store the task ID
 
             mines_count = self.adjacent_mines(current_row, current_col)
             if mines_count == 0:
