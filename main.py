@@ -234,7 +234,7 @@ class Minesweeper:
 
 
     def update_time_elapsed(self):
-        if self.game_active:  # Only update if the game is active
+        if self.game_active:  # only update if the game is active
             elapsed_time = int(time.time() - self.start_time)
             self.time_elapsed_label.config(text=f"Time: {elapsed_time}s")
             self.master.after(100, self.update_time_elapsed)
